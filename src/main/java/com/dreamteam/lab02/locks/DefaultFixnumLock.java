@@ -1,6 +1,7 @@
 package com.dreamteam.lab02.locks;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
 
 abstract class DefaultFixnumLock implements FixnumLock {
 
@@ -51,5 +52,13 @@ abstract class DefaultFixnumLock implements FixnumLock {
 
     private void resetPid() {
         pid = -1;
+    }
+
+    public Condition newCondition() {
+        throw new UnsupportedOperationException("Conditions does not supports by this type of lock");
+    }
+
+    public void lockInterruptibly() throws InterruptedException {
+        throw new InterruptedException("just that's why");
     }
 }

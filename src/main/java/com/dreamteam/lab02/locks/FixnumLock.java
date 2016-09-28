@@ -27,5 +27,4 @@ public interface FixnumLock extends Lock {
      *
      */
     void unregister();
-
 }
