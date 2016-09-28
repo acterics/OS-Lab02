@@ -1,4 +1,4 @@
-package com.dreamteam.lab02;
+package com.dreamteam.lab02.locks;
 
 import java.util.concurrent.locks.Lock;
 
@@ -21,7 +21,7 @@ public interface FixnumLock extends Lock {
     /**
      *
      */
-    void register();
+    boolean register();
 
     /**
      *
