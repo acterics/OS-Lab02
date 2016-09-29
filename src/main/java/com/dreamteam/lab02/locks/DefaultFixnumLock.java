@@ -30,13 +30,13 @@ public abstract class DefaultFixnumLock implements FixnumLock {
             return false;
         }
 
-        pidList.add(pid, true);
+        pidList.set(pid, true);
 
         return true;
     }
 
     public void unregister() {
-        pidList.add(pid, false);
+        pidList.set(pid, false);
         resetPid();
     }
 
