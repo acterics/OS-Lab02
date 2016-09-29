@@ -7,8 +7,18 @@ import java.util.concurrent.locks.Condition;
 public abstract class DefaultFixnumLock implements FixnumLock {
 
     static int threadNumber = 10;
-    static ArrayList<Boolean> pidList = new ArrayList<>(threadNumber);
+    static ArrayList<Boolean> pidList = initPidList();
     int pid = -1;
+
+    static private ArrayList<Boolean> initPidList() {
+        ArrayList<Boolean> pidList = new ArrayList<>();
+
+        for(int i = 0; i < threadNumber; ++i) {
+            pidList.add(false);
+        }
+
+        return pidList;
+    }
 
     public DefaultFixnumLock() {
     }
