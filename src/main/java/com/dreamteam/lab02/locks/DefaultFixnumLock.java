@@ -42,7 +42,7 @@ public abstract class DefaultFixnumLock implements FixnumLock {
 
     private boolean takePid() {
         for(int i = 0; i < threadNumber; ++i) {
-            if(pidList.get(i)) {
+            if(!pidList.get(i)) {
                 pid = i;
                 return true;
             }
