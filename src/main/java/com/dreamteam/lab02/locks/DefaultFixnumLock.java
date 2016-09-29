@@ -7,17 +7,24 @@ import java.util.concurrent.locks.Condition;
 public abstract class DefaultFixnumLock implements FixnumLock {
 
     static int threadNumber = 10;
-    static ArrayList<Boolean> pidList = initPidList();
+    static ArrayList<Boolean> pidList = getFilledBoolList(threadNumber);
     int pid = -1;
+    static final Object sync = new Object();
 
-    static private ArrayList<Boolean> initPidList() {
-        ArrayList<Boolean> pidList = new ArrayList<>();
-
-        for(int i = 0; i < threadNumber; ++i) {
-            pidList.add(false);
+    protected static ArrayList<Boolean> getFilledBoolList(int size) {
+        ArrayList<Boolean> list = new ArrayList<>();
+        for(int i = 0; i < size; ++i) {
+            list.add(false);
         }
+        return list;
+    }
 
-        return pidList;
+    protected static ArrayList<Integer> getFilledIntList(int size) {
+        ArrayList<Integer> list = new ArrayList<>();
+        for(int i = 0; i < size; ++i) {
+            list.add(0);
+        }
+        return list;
     }
 
     public DefaultFixnumLock() {
@@ -51,14 +58,16 @@ public abstract class DefaultFixnumLock implements FixnumLock {
     }
 
     private boolean takePid() {
-        for(int i = 0; i < threadNumber; ++i) {
-            if(!pidList.get(i)) {
-                pid = i;
-                return true;
+        synchronized (sync) {
+            for (int i = 0; i < threadNumber; ++i) {
+                if (!pidList.get(i)) {
+                    pid = i;
+                    return true;
+                }
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 
     private void resetPid() {

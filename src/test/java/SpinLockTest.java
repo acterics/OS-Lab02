@@ -1,13 +1,18 @@
-import com.dreamteam.lab02.SpinLock;
+
+
+import com.dreamteam.lab02.locks.SpinLock;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 
 
 public class SpinLockTest {
-    static final int size = 10;
-    static final SpinLock spinLock = new SpinLock();
-    static ArrayList<Integer> resource = new ArrayList<>();
+    private static final int size = 10000000;
+    private static final int threadCount = 10;
+    private static final SpinLock spinLock = new SpinLock();
+    private static ArrayList<Integer> resource = new ArrayList<>();
+
     private static class Task implements Runnable {
         private ArrayList<Integer> resource;
         private String name;
@@ -25,14 +30,16 @@ public class SpinLockTest {
                     try {
                         for(Integer i : resource) {
                             i = new Random().nextInt(size);
-                            System.out.print(i + ", ");
+                            //System.out.print(i + ", ");
+
                         }
+                        resource.sort(Comparator.naturalOrder());
+                        System.out.println("Sorted!");
                         System.out.println();
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //lock.close();
                 }
 
             }
@@ -50,10 +57,8 @@ public class SpinLockTest {
             resource.add(i);
         }
         System.out.println("Creating tasks");
-        Task task1 = new Task(resource, "task1");
-        Task task2 = new Task(resource, "task2");
-
-        task1.start();
-        task2.start();
+        for(int i = 0; i < threadCount; ++i) {
+            new Task(resource, "task" + i).start();
+        }
     }
 }

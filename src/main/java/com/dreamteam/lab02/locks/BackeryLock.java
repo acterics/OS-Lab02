@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class BackeryLock extends DefaultFixnumLock {
 
-    static ArrayList<Boolean> entering = new ArrayList<>(threadNumber); // 1 when thread entering in line
-    static ArrayList<Integer> ticket = new ArrayList<>(threadNumber);
+    static ArrayList<Boolean> entering = getFilledBoolList(threadNumber); // 1 when thread entering in line
+    static ArrayList<Integer> ticket = getFilledIntList(threadNumber);
     // ticket for threads in line, n - number of threads
     // Java initializes each element of 'ticket' to 0
 

@@ -4,6 +4,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
+ *
+ *
+ * This is a lock designed to protect VERY short sections of
+ * critical code.  Threads attempting to take the lock will spin
+ * forever until the lock is available, thus it is important that
+ * the code protected by this lock is extremely simple and non
+ * blocking. The reason for this lock is that it prevents a thread
+ * from giving up a CPU core when contending for the lock
+ *
+ *
  * Usage:
  * try(SpinLock.Lock lock = spinlock.lock())
  * {
@@ -15,12 +25,14 @@ public class SpinLock
 {
     private final AtomicReference<Thread> _lock = new AtomicReference<>(null);
     private final Lock _unlock = new Lock();
+
     private void log(String message) {
         System.out.println("Log: " + message);
     }
+
     public Lock lock()
     {
-        log("Enter lock()");
+        //log("Enter lock()");
         Thread thread = Thread.currentThread();
         while(true)
         {
@@ -30,7 +42,7 @@ public class SpinLock
                     throw new IllegalStateException("SpinLock is not reentrant");
                 continue;
             }
-            log("Lock equals null, exit lock()");
+            //log("Lock equals null, exit lock()");
             return _unlock;
         }
     }
@@ -50,7 +62,7 @@ public class SpinLock
         @Override
         public void close()
         {
-            log("Lock closed");
+            //log("Lock closed");
             _lock.set(null);
         }
     }
