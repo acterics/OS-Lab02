@@ -1,7 +1,6 @@
 package com.dreamteam.lab02.locks;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class BackeryLock extends DefaultFixnumLock {
 
@@ -11,7 +10,7 @@ public class BackeryLock extends DefaultFixnumLock {
     // Java initializes each element of 'ticket' to 0
 
     // Java initializes each element of 'entering' to 0
-    public void lock(int pid) // thread ID
+    public void lock() // thread ID
     {
         /*
             Set max+1 ticket number for thread
@@ -50,15 +49,7 @@ public class BackeryLock extends DefaultFixnumLock {
         // The critical section goes here...
     }
 
-    public void unlock(int pid) {
+    public void unlock() {
         ticket.set(pid, 0);
-    }
-
-    public boolean tryLock() {
-        return false;
-    }
-
-    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return false;
     }
 }

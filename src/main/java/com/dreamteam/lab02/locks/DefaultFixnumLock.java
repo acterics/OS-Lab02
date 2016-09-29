@@ -1,9 +1,10 @@
 package com.dreamteam.lab02.locks;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 
-abstract class DefaultFixnumLock implements FixnumLock {
+public abstract class DefaultFixnumLock implements FixnumLock {
 
     static int threadNumber = 10;
     static ArrayList<Boolean> pidList = new ArrayList<>(threadNumber);
@@ -25,7 +26,7 @@ abstract class DefaultFixnumLock implements FixnumLock {
     }
 
     public boolean register() {
-        if(!getPid()) {
+        if(!takePid()) {
             return false;
         }
 
@@ -39,7 +40,7 @@ abstract class DefaultFixnumLock implements FixnumLock {
         resetPid();
     }
 
-    private boolean getPid() {
+    private boolean takePid() {
         for(int i = 0; i < threadNumber; ++i) {
             if(pidList.get(i)) {
                 pid = i;
@@ -60,5 +61,13 @@ abstract class DefaultFixnumLock implements FixnumLock {
 
     public void lockInterruptibly() throws InterruptedException {
         throw new InterruptedException("just that's why");
+    }
+
+    public boolean tryLock() {
+        return false;
+    }
+
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return false;
     }
 }
