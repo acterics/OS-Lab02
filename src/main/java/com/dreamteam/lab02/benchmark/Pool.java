@@ -1,7 +1,8 @@
 package com.dreamteam.lab02.benchmark;
 
 
-import com.dreamteam.lab02.locks.BackeryLock;
+import com.dreamteam.lab02.locks.BakeryLock;
+import com.dreamteam.lab02.locks.BakeryBlackAndWhite;
 import com.dreamteam.lab02.locks.DefaultFixnumLock;
 import com.dreamteam.lab02.locks.FixnumLock;
 
@@ -24,7 +25,7 @@ public class Pool {
     public Pool(int poolSize) {
         System.out.println("Creating pool with " + poolSize + " threads");
         for(int i = 0; i < poolSize; ++i) {
-            threads.add(new LockTestThread(new BackeryLock()));
+            threads.add(new LockTestThread(new BakeryBlackAndWhite())); // choosing type of lock
         }
 
     }

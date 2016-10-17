@@ -2,7 +2,7 @@ package com.dreamteam.lab02.locks;
 
 import java.util.ArrayList;
 
-public class BackeryLock extends DefaultFixnumLock {
+public class BakeryLock extends DefaultFixnumLock {
 
     static ArrayList<Boolean> entering = getFilledBoolList(threadNumber); // 1 when thread entering in line
     static ArrayList<Integer> ticket = getFilledIntList(threadNumber);
@@ -47,6 +47,7 @@ public class BackeryLock extends DefaultFixnumLock {
             }
         }
         // The critical section goes here...
+        System.out.println("Inside Critical Section, ticket number = " + ticket.get(pid));
     }
 
     public void unlock() {
