@@ -10,6 +10,7 @@ public class BakeryLock extends DefaultFixnumLock {
     // Java initializes each element of 'ticket' to 0
 
     // Java initializes each element of 'entering' to 0
+    @Override
     public void lock() // thread ID
     {
         /*

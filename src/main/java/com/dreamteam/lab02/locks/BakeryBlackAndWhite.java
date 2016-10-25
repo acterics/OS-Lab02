@@ -1,8 +1,5 @@
-// Java implementation of modified Bakery algorithm - Black and White Bakery Algorithm ( G. Taubenfeld, 2004 )
-// Description of the algorithm (page 223): https://books.google.com.ua/books?id=jHyHdHSZSGkC&lpg=PA224&ots=JY6qD1MRJK&dq=black%20and%20white%20bakery%20algorithm%20java&hl=uk&pg=PA223#v=onepage&q=black%20and%20white%20bakery%20algorithm%20java&f=false
-// Pseudo code: http://www.cs.tau.ac.il/~afek/gadi.pdf
-
 package com.dreamteam.lab02.locks;
+
 import java.util.*;
 
 public class BakeryBlackAndWhite extends DefaultFixnumLock{

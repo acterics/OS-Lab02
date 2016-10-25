@@ -1,12 +1,9 @@
 package com.dreamteam.lab02.benchmark;
 
 
-import com.dreamteam.lab02.locks.BakeryLock;
-import com.dreamteam.lab02.locks.BakeryBlackAndWhite;
-import com.dreamteam.lab02.locks.DefaultFixnumLock;
 import com.dreamteam.lab02.locks.FixnumLock;
 
-import java.sql.Time;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -16,26 +13,57 @@ public class Pool {
     private int poolSize;
 
     String testResource = "untouched";
-
+    boolean isInited = false;
 
     public void onResourceUsed() {
-        System.out.println("resource status: " + testResource);
+//        System.out.println("resource status: " + testResource);
     }
 
     public Pool(int poolSize) {
-        System.out.println("Creating pool with " + poolSize + " threads");
-        for(int i = 0; i < poolSize; ++i) {
-            threads.add(new LockTestThread(new BakeryBlackAndWhite())); // choosing type of lock
-        }
+        this.poolSize = poolSize;
 
+    }
+
+    public void initThreads(Class lockClass) throws IllegalAccessException, InstantiationException {
+        if(isInited) {
+            clearThreads();
+        }
+        isInited = true;
+        System.out.println("Creating pool with " + poolSize + " threads");
+        System.out.println("Lock class: " + lockClass.toString());
+        for(int i = 0; i < poolSize; ++i) {
+            threads.add(new LockTestThread((FixnumLock)lockClass.newInstance())); // choosing type of lock
+        }
+    }
+    public void clearThreads() {
+        isInited = false;
+        for(Thread thread: threads) {
+            thread.interrupt();
+        }
+        threads.clear();
+    }
+
+    private void joinAll() throws InterruptedException {
+        for(LockTestThread thread: threads) {
+            thread.join();
+        }
     }
 
 
 
-    public void runThreads() throws InterruptedException {
+    public void runThreads() throws Exception {
+        if(!isInited)
+            throw new Exception("Threads isn't inited");
+        long time = System.nanoTime();
+        float dif;
+        System.out.println("**********************Pool task started**********************");
         for(LockTestThread thread: threads) {
             thread.start();
         }
+        joinAll();
+        dif = (float)(System.nanoTime() - time) / 1000000000;
+        System.out.println("**********************Pool task finished with time " + dif +" **********************");
+
 
     }
 
@@ -45,35 +73,29 @@ public class Pool {
 
         public LockTestThread(FixnumLock lock) {
             super();
-            System.out.println("Creating task...");
+            System.out.println("Creating thread...");
             this.lock = lock;
         }
         @Override
         public void run() {
-            System.out.println("Registrate thread: " + Thread.currentThread().getName());
-            lock.register();
-            System.out.println("Run task...");
-            int threadNum = new Random().nextInt(10);
-            while(!(threadNum == 5)){
-                System.out.println("Lock thread: " + Thread.currentThread().getName());
-                lock.lock();
-                System.out.print("Previous status: ");
-                onResourceUsed();
-                try {
-                    Thread.sleep(threadNum);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                testResource = "currnet thread: " + Thread.currentThread().getName();
-
-                onResourceUsed();
-                System.out.println("Unlock thread: " + Thread.currentThread().getName());
-                threadNum = new Random().nextInt(10);
-                lock.unlock();
-
+//            System.out.println("Registrate thread: " + Thread.currentThread().getName());
+            while(!lock.register()) {
+                Thread.yield();
             }
-            System.out.println("Unregistrate thread: " + Thread.currentThread().getName());
+            lock.lock();
+            f(50);
+            lock.unlock();
+//            System.out.println("Register pid: " + lock.getId());
+//            System.out.println("Run task...");
+
+//            System.out.println("Unregistrate thread: " + Thread.currentThread().getName());
             lock.unregister();
+        }
+
+        private int f(int i) {
+            if(i == 0) return 0;
+            if(i == 1) return 1;
+            return f(i-2) + f(i-1);
         }
     }
 

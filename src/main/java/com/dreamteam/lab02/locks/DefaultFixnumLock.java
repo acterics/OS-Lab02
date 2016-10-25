@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Condition;
 
 public abstract class DefaultFixnumLock implements FixnumLock {
 
-    static int threadNumber = 10;
+    static int threadNumber = 20;
     static ArrayList<Boolean> pidList = getFilledBoolList(threadNumber);
     int pid = -1;
     static final Object sync = new Object();
