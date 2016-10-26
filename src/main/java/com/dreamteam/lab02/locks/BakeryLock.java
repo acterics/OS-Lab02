@@ -4,12 +4,9 @@ import java.util.ArrayList;
 
 public class BakeryLock extends DefaultFixnumLock {
 
-    static ArrayList<Boolean> entering = getFilledBoolList(threadNumber); // 1 when thread entering in line
-    static ArrayList<Integer> ticket = getFilledIntList(threadNumber);
-    // ticket for threads in line, n - number of threads
-    // Java initializes each element of 'ticket' to 0
+    static ArrayList<Boolean> entering = getFilledList(threadNumber, false); // 1 when thread entering in line
+    static ArrayList<Integer> ticket = getFilledList(threadNumber, 0);
 
-    // Java initializes each element of 'entering' to 0
     @Override
     public void lock() // thread ID
     {

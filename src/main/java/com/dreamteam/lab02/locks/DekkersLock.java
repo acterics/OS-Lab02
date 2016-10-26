@@ -1,13 +1,11 @@
 package com.dreamteam.lab02.locks;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
 
 public class DekkersLock extends DefaultFixnumLock {
 
     static int threadNumber = 2;
-    private static ArrayList<Boolean> flag = getFilledBoolList(threadNumber);
+    private static ArrayList<Boolean> flag = getFilledList(threadNumber, false);
     private static int turn = 0;
 
     @Override

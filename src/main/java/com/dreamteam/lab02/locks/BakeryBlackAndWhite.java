@@ -1,24 +1,35 @@
 package com.dreamteam.lab02.locks;
 
-import java.util.*;
+
+import java.util.ArrayList;
 
 public class BakeryBlackAndWhite extends DefaultFixnumLock{
-    // @color - black and white flag, defines the the color of the open queue.
-    // false - black, true - white.
+    /**
+     * Black and white flag, defines the the color of the open queue.
+     * false - black, true - white.
+     */
     static boolean color;
+    /**
+     * Flag which indicate if the thread wants to enter the critical region
+     * false - no interest, true - entering the line
+     * Java initializes each element of 'entering' to false
+    **/
+    static ArrayList<Boolean> entering = getFilledList(threadNumber, false);
 
-    // @entering - flag which indicate if the thread wants to enter the critical region
-    // false - no interest, true - entering the line
-    // Java initializes each element of 'entering' to false
-    static ArrayList<Boolean> entering = getFilledBoolList(threadNumber);
 
-    // @ticket - ticket for threads in line, n - number of threads
-    // Java initializes each element of 'ticket' to 0
-    static ArrayList<Integer> ticket = getFilledIntList(threadNumber);
 
-    // @myColor - specify the color of each thread, the abstract queue which it joined to.
-    // false - black, true - white
-    static ArrayList<Boolean> myColor = getFilledBoolList(threadNumber);
+    /**
+     * Ticket for threads in line, n - number of threads
+     * Java initializes each element of 'ticket' to 0
+     */
+    static ArrayList<Integer> ticket = getFilledList(threadNumber, 0);
+
+
+    /**
+     * Specify the color of each thread, the abstract queue which it joined to.
+     * false - black, true - white
+     */
+    static ArrayList<Boolean> myColor = getFilledList(threadNumber, false);
 
     public BakeryBlackAndWhite() {
         color = true;
@@ -56,19 +67,13 @@ public class BakeryBlackAndWhite extends DefaultFixnumLock{
         }
 
         // critical section goes here ...
-        System.out.println("Inside Critical Section, ticket number = " + ticket.get(pid));
-        System.out.println("Color of the ticket: " + myColor.get(pid));
+//        System.out.println("Inside Critical Section, ticket number = " + ticket.get(pid));
+//        System.out.println("Color of the ticket: " + myColor.get(pid));
     }
 
     @Override
     public void unlock() {
-        if (myColor.get(pid).equals(false)){
-            color = true;
-        }
-        else {
-            color = false;
-        }
-
+        color = myColor.get(pid).equals(false);
         ticket.set(pid,0);
     }
 }

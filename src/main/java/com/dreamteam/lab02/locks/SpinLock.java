@@ -1,6 +1,8 @@
 package com.dreamteam.lab02.locks;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Condition;
 
 
 /**
@@ -13,39 +15,37 @@ import java.util.concurrent.atomic.AtomicReference;
  * blocking. The reason for this lock is that it prevents a thread
  * from giving up a CPU core when contending for the lock
  *
- *
- * Usage:
- * try(SpinLock.Lock lock = spinlock.lock())
- * {
- *   // something very quick and non blocking
- * }
+ * FixnumLock interface implementations have used only for compatibility
+ * with other locks in test programs
  *
  */
-public class SpinLock
-{
-    private final AtomicReference<Thread> _lock = new AtomicReference<>(null);
-    private final Lock _unlock = new Lock();
+public class SpinLock implements FixnumLock {
 
-    private void log(String message) {
-        System.out.println("Log: " + message);
-    }
+    private static final AtomicReference<Thread> _lock = new AtomicReference<>(null);
 
-    public Lock lock()
-    {
-        //log("Enter lock()");
-        Thread thread = Thread.currentThread();
-        while(true)
-        {
-            if (!_lock.compareAndSet(null,thread)) //if lock equals null then lock become thread and return unlock
-            {
-                if (_lock.get()==thread) //if lock equals currant thread then throw exception
-                    throw new IllegalStateException("SpinLock is not reentrant");
-                continue;
+    @Override
+    public void lock() {
+        try {
+            Thread thread = Thread.currentThread();
+
+            while (true) {
+                if (!_lock.compareAndSet(null, thread)) //if lock equals null then lock become thread and return unlock
+                {
+                    if (_lock.get() == thread) //if lock equals currant thread then throw exception
+                        throw new IllegalStateException("SpinLock is not reentrant");
+                    continue;
+                }
+                return;
             }
-            //log("Lock equals null, exit lock()");
-            return _unlock;
+        } catch (Exception ignored) {
+
         }
     }
+    @Override
+    public void unlock() {
+        _lock.set(null);
+    }
+
 
     public boolean isLocked()
     {
@@ -57,13 +57,47 @@ public class SpinLock
         return _lock.get()==Thread.currentThread();
     }
 
-    public class Lock implements AutoCloseable
-    {
-        @Override
-        public void close()
-        {
-            //log("Lock closed");
-            _lock.set(null);
-        }
+
+
+    @Deprecated
+    public Condition newCondition() {
+        throw new UnsupportedOperationException("Conditions does not supports by this type of lock");
+    }
+
+    @Deprecated
+    public void lockInterruptibly() throws InterruptedException {
+        throw new InterruptedException("just that's why");
+    }
+
+    @Deprecated
+    public boolean tryLock() {
+        return false;
+    }
+
+    @Deprecated
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return false;
+    }
+
+
+
+
+
+
+    @Override
+    public int getId() {
+        System.out.println("Lock haven't id");
+        return -1;
+    }
+
+    @Override
+    public boolean register() {
+//        System.out.println("Registration is unnecessary");
+        return true;
+    }
+
+    @Override
+    public void unregister() {
+//        System.out.println("Registration is unnecessary");
     }
 }
